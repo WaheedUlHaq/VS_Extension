@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+    <CodeSnippet Format="1.0.0">
+        <Header>
+            <Title>Dynamics CRM Plugin Class For Custom Workflow</Title>
+            <Author>Waheed</Author>
+            <Description>Creates class to code Custom workflow.</Description>
+            <Shortcut>crmworkflow</Shortcut>
+        </Header>
+        <Snippet>
+            <Code Language="CSharp">
+                <![CDATA[
+    using Microsoft.Xrm.Sdk;
+    using Microsoft.Xrm.Sdk.Workflow;
+    using System.Activities;
+
+    public class $WorkflowClassName$ : CodeActivity
+    {
+        #region Input/Output Arguments
+
+        //Data Type : String (Can be used as Input/Output)
+        [Input("String Inupt")]
+        [Output("String Output")]
+        [Default("StringValue")]
+        [RequiredArgument]
+        //public InArgument<string> StringInArgument { get; set; }
+        public InOutArgument<string> StringInOutArgument { get; set; }
+
+        //Data Type : Date and Time
+        [Input("Date Time")]
+        [Output("Date Time")]
+        [RequiredArgument]
+        [Default("1982-07-09T02:54:00Z")]
+        public InOutArgument DateOfBirth { get; set; }
+
+        //Data Type : Lookup
+        [Input("Lookup")]
+        [Output("Lookup")]
+        [ReferenceTarget("account")]
+        [RequiredArgument]
+        //public InArgument EntityReferenceInArgument { get; set; }
+        public InOutArgument<EntityReference> EntityReferenceInOutArgument { get; set; }
+
+        //Data Type : Option Set
+        [Input("status")]
+        [Output("status")]
+        [RequiredArgument]
+        [AttributeTarget("account", "statuscode")]
+        public InOutArgument Status { get; set; }
+
+        //Data Type : Two Option Set
+        [Input("Required ?")]
+        [Output("Required ?")]
+        [RequiredArgument]
+        public InOutArgument<bool> Required { get; set; }
+
+        //Data Type : Whole Number
+        [Input("Age")]
+        [Output("Age")]
+        [RequiredArgument]
+        public InOutArgument<int> Age { get; set; }
+
+        //Data Type : Decimal Number
+        [Input("Fee")]
+        [Output("Fee")]
+        [RequiredArgument]
+        public InOutArgument<decimal> Fee { get; set; }
+
+        //Data Type : Floating Point Number
+        [Input("Amount")]
+        [Output("Amount")]
+        [RequiredArgument]
+        public InOutArgument<decimal> Amount { get; set; }
+
+        //Data Type : Currency
+        [Input("Currency")]
+        [Output("Currency")]
+        [RequiredArgument]
+        public InOutArgument Currency { get; set; }
+
+        #endregion
+
+        protected override void Execute(CodeActivityContext executionContext)
+        {
+            ITracingService tracer = executionContext.GetExtension<ITracingService>();
+            IWorkflowContext context = executionContext.GetExtension<IWorkflowContext>();
+            IOrganizationServiceFactory serviceFactory = executionContext.GetExtension<IOrganizationServiceFactory>();
+            IOrganizationService service = serviceFactory.CreateOrganizationService(context.UserId);
+
+            try
+            {
+                tracer.Trace("Workflow Input and output parameters.");
+                
+                #region Input
+                string name = StringInOutArgument.Get<string>(executionContext);
+                DateTime dateOfBirth = DateOfBirth.Get<DateTime>(executionContext);
+                string erName = EntityReferenceInOutArgument.Get<EntityReference>(executionContext)?.Name;
+                int status = Status.Get<OptionSetValue>(executionContext).Value;
+                bool required = Required.Get(executionContext);
+                int age = Age.Get(executionContext);
+                decimal fee = Fee.Get(executionContext);
+                decimal amount = Amount.Get(executionContext);
+                #endregion
+
+                #region Output
+                this.StringInOutArgument.Set(executionContext, name);
+                this.EntityReferenceInOutArgument.Set(executionContext, new EntityReference("Account.LogicalName", new Guid("Account.Id")));
+                this.Required.Set(executionContext, true); 
+                #endregion
+
+                tracer.Trace("Input and output parameters Workflow Ended.");
+
+                Entity entity = (Entity)context.InputParameters["Target"];
+
+                //TODO: Do stuff
+            }
+            catch (Exception e)
+            {
+                throw new InvalidPluginExecutionException(e.Message);
+            }
+        }
+    }
+                ]]>
+            </Code>
+            <Declarations>
+                <Literal>
+                    <ID>WorkflowClassName</ID>
+                    <Default>WorkflowClass</Default>
+                    <ToolTip>Name of the class for workflow.</ToolTip>
+                </Literal>
+            </Declarations>
+        </Snippet>
+    </CodeSnippet>
+</CodeSnippets>

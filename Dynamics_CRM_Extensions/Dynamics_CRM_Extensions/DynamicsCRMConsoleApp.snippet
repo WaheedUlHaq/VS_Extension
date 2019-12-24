@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+    <CodeSnippet Format="1.0.0">
+        <Header>
+            <Title>Class for Console Application</Title>
+            <Author>Waheed</Author>
+            <Description>Creates a class for Console App including all requirments to code.</Description>
+            <Shortcut>crmconsole</Shortcut>
+        </Header>
+        <Snippet>
+            <Code Language="CSharp">
+                <![CDATA[
+    using Microsoft.Crm.Sdk.Messages;
+    using Microsoft.Xrm.Sdk;
+    using Microsoft.Xrm.Tooling.Connector;
+
+    class $ClassName$
+    {
+        private static CrmServiceClient _client;
+
+        public static void Main(string[] args)
+        {
+            try
+            {
+                Console.WriteLine("Console app started.");
+
+                #region Example connection string for config.
+                //<connectionStrings>
+                //  <!-- Online using Office 365 -->
+                //  <add name="CRMConnectionString" connectionString="Url=https://contoso.crm.dynamics.com; Username=crmadmin@contoso.onmicrosoft.com; Password=password; AuthType=Office365;" />
+
+                //  <!-- On-premises with provided user credentials -->
+                //  <!-- <add name="CRMConnectionString"
+                //       connectionString="Url=http://myserver/contoso; Domain=mydomain; Username=administrator; Password=password; AuthType=AD;"/> -->
+
+                //  <!-- On-premises using Windows integrated security -->
+                //  <!-- <add name="CRMConnectionString"
+                //       connectionString="Url=http://myserver/contoso; authtype=AD;"/> -->
+
+                //  <!-- On-Premises (IFD) with claims -->
+                //  <!--<add name="CRMConnectionString"
+                //       connectionString="Url=https://hostname.contoso.com/orgname; Domain=mydomain; Username=mydomain\administrator; Password=password; AuthType=IFD;"/>-->
+
+                //  <!-- OAuth -->
+                //  <!--<add name="CRMConnectionString"
+                //     connectionString="Url=https://contoso.crm.dynamics.com; Username=crmadmin@contoso.onmicrosoft.com; Password=password; AppId=<GUID>; RedirectUri=app://<GUID>; AuthType=OAuth;"/>-->
+                //</connectionStrings> 
+                #endregion
+
+                using (_client = new CrmServiceClient(System.Configuration.ConfigurationManager.ConnectionStrings["CRMConnectionString"].ConnectionString))
+                {
+                    //Do stuff
+                }
+
+            }
+            catch (System.ServiceModel.FaultException<OrganizationServiceFault> ex)
+            {
+                string message = ex.Message;
+                Console.WriteLine("Exception: " + message);
+            }
+
+            Console.WriteLine("Press any key to EXIT");
+            Console.ReadKey();
+        }
+    }
+                ]]>
+            </Code>
+            <Declarations>
+                <Literal>
+                    <ID>ClassName</ID>
+                    <Default>Program</Default>
+                    <ToolTip>Name of the class for Console application.</ToolTip>
+                </Literal>
+            </Declarations>
+        </Snippet>
+    </CodeSnippet>
+</CodeSnippets>

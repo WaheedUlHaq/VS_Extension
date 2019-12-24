@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+    <CodeSnippet Format="1.0.0">
+        <Header>
+            <Title>Dynamics CRM Plugin Class</Title>
+            <Author>Waheed</Author>
+            <Description>Create Class to code plugin for Dynamics CRM.</Description>
+            <Shortcut>crmplugin</Shortcut>
+        </Header>
+        <Snippet>
+            <Code Language="CSharp">
+                <![CDATA[
+using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
+
+public class $ClassName$ : IPlugin
+{
+    #region Secure/Unsecure Configuration Setup
+    private string _secureConfig = null;
+    private string _unsecureConfig = null;
+
+    public $ClassName$(string unsecureConfig, string secureConfig)
+    {
+        _secureConfig = secureConfig;
+        _unsecureConfig = unsecureConfig;
+    }
+    #endregion
+
+    public void Execute(IServiceProvider serviceProvider)
+    {
+        ITracingService tracer = (ITracingService)serviceProvider.GetService(typeof(ITracingService));
+        IPluginExecutionContext context = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
+        IOrganizationServiceFactory factory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
+        IOrganizationService service = factory.CreateOrganizationService(context.UserId);
+
+        try
+        {
+            Entity entity = (Entity)context.InputParameters["Target"];
+
+            //TODO: Do stuff
+        }
+        catch (Exception e)
+        {
+            throw new InvalidPluginExecutionException(e.Message);
+        }
+    }
+}
+]]>
+            </Code>
+            <Declarations>
+                <Literal>
+                    <ID>ClassName</ID>
+                    <Default>ClassName</Default>
+                    <ToolTip>Name of the class for this plugin.</ToolTip>
+                </Literal>
+            </Declarations>
+        </Snippet>
+    </CodeSnippet>
+</CodeSnippets>
